@@ -1,0 +1,8 @@
+# files
+*.log
+.DS_Store
+.env
+fastapi_omdb_api.db
+
+# directories
+__pycache__/
