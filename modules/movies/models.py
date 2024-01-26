@@ -1,6 +1,5 @@
 from include.database import Base
-from modules.users.models import *
-from sqlalchemy import Column, Integer, String, Text, Float, JSON
+from sqlalchemy import JSON, Column, Float, Integer, String, Text
 
 
 class Movie(Base):

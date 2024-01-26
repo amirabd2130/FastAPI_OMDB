@@ -30,9 +30,6 @@ class Movie(BaseModel):
     production: str
     website: str
 
-    class Config():
-        orm_mode = True
-
 
 class MovieListPaginated(BaseModel):
     results: List[Movie] = []

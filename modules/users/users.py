@@ -9,22 +9,24 @@ from sqlalchemy.orm import Session
 
 class User():
     def create_user(request: schemas.User, db: Session):
-        user = db.query(models.User).where(
-            models.User.username == request.username)
-        if user.first():
-            raise exceptions.USER_EXISTS_EXCEPTION
+        if not request.username or not request.password:
+            raise exceptions.BAD_REQUEST_EXCEPTION
         else:
-            newUser = models.User(
-                id=str(uuid.uuid4()),
-                first_name=request.first_name,
-                last_name=request.last_name,
-                username=request.username,
-                password=hashing.Hashing.Hash(request.password),
-                status=request.status)
-            db.add(newUser)
-            db.commit()
-            db.refresh(newUser)
-            return newUser
+            user = db.query(models.User).where(
+                models.User.username == request.username).first()
+            if user:
+                raise exceptions.USER_EXISTS_EXCEPTION
+            else:
+                newUser = models.User(
+                    id=str(uuid.uuid4()),
+                    first_name=request.first_name,
+                    last_name=request.last_name,
+                    username=request.username,
+                    password=hashing.Hashing.Hash(request.password),)
+                db.add(newUser)
+                db.commit()
+                db.refresh(newUser)
+                return newUser
 
     def get_user_by_id(id: str, db: Session):
         user = db.query(models.User).where(models.User.id == id).first()

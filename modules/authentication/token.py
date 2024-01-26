@@ -5,6 +5,7 @@ from typing import Union
 from include import exceptions, schemas
 from jose import JWTError, jwt
 
+
 SECRET_KEY = os.environ.get("FASTAPI_OMDB_HASHING_SECRET_KEY")
 ALGORITHM = os.environ.get("FASTAPI_OMDB_HASHING_ALGORITHM")
 TOKEN_EXPIRATION = int(os.environ.get(

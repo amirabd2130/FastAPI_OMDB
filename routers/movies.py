@@ -1,11 +1,12 @@
-from typing import List, Union, Dict, Any, Annotated
-from annotated_types import Gt, Ge
+from typing import Annotated
 
+from annotated_types import Ge
 from fastapi import APIRouter, Depends, status
 from include import database, schemas
 from modules.movies.movies import Movie
 from modules.users.users import User
 from sqlalchemy.orm import Session
+
 
 router = APIRouter(
     prefix="/movie",
@@ -19,7 +20,7 @@ def init_movies(title: str, count: Annotated[int, Ge(0)], db: Session = Depends(
 
 
 @router.post("/add", status_code=status.HTTP_201_CREATED, response_model=schemas.Movie)
-def add_movie_by_title(title: str, db: Session = Depends(database.get_db)):
+def add_movie_by_title(title: str = "", db: Session = Depends(database.get_db)):
     return Movie.add_movie_by_title(title, db)
 
 

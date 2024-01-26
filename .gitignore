@@ -3,6 +3,8 @@
 .DS_Store
 .env
 fastapi_omdb_api.db
+fastapi_omdb_api_test.db
 
 # directories
 __pycache__/
+.pytest_cache/

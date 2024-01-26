@@ -4,6 +4,7 @@ from include import database
 from modules.authentication.authentication import Authentication
 from sqlalchemy.orm import Session
 
+
 router = APIRouter(
     prefix="/login",
     tags=["User"],

@@ -9,6 +9,12 @@ A simple API service implemented using FastAPI to retrieve movie data from the O
 - `/movie/get` to retrieve a movie from the local database by imdb_id, title, or both.
 - `/movie/delete/{imdb_id}` to delete a movie from the local database by imdb_id. Note: Authorization is required for this operation.
 
+## Running tests
+
+Navigate to `FastAPI_OMDB` directory and run the following command:
+
+`python3 -m pytest`
+
 ## Running outside docker
 
 The Following environment variables must be set if you want to run the API outside docker:
@@ -34,4 +40,4 @@ Navigate to `FastAPI_OMDB` directory and run the following command:
 
 ## accessing the API service
 
-Regardless of how you run the service, you can access the service in http://127.0.0.1:8000/docs this is the
+Regardless of how you run the service, you can access the swagger documentation at http://127.0.0.1:8000/docs

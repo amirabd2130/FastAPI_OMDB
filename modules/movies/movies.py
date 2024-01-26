@@ -54,32 +54,35 @@ class Movie():
         )
 
     def init_movies(title: str, count: int, db: Session):
-        # If there's no movie in the db
-        if Movie.get_record_count(db) == 0:
-            movieCount, page = 0, 2
-            while movieCount < count:
-                moviesData = omdb.get_movie_detail_by_title(title, page)
-                if not moviesData:
-                    raise exceptions.OMDB_API_ERROR
-                else:
-                    for movieData in moviesData:
-                        if movieCount == count:
-                            break
-                        else:
-                            movieCount += 1
-                            movieDataDetails = omdb.get_movie_detail_by_id(
-                                movieData.get("imdbID"))
-                            if not movieDataDetails:
-                                raise exceptions.OMDB_API_ERROR
+        if not title or not count:
+            raise exceptions.BAD_REQUEST_EXCEPTION
+        else:
+            # If there's no movie in the db
+            if Movie.get_record_count(db) == 0:
+                movieCount, page = 0, 2
+                while movieCount < count:
+                    moviesData = omdb.get_movie_detail_by_title(title, page)
+                    if not moviesData:
+                        raise exceptions.OMDB_API_ERROR
+                    else:
+                        for movieData in moviesData:
+                            if movieCount == count:
+                                break
                             else:
-                                newMovie = Movie.create_movie_object(
-                                    movieDataDetails)
-                                db.add(newMovie)
-                    page += 1
-            db.commit()
-            return f"{movieCount} movies has been added to the database"
-
-        return "The movie table is not empty. Nothing new added to the database."
+                                movieCount += 1
+                                movieDataDetails = omdb.get_movie_detail_by_id(
+                                    movieData.get("imdbID"))
+                                if not movieDataDetails:
+                                    raise exceptions.OMDB_API_ERROR
+                                else:
+                                    newMovie = Movie.create_movie_object(
+                                        movieDataDetails)
+                                    db.add(newMovie)
+                        page += 1
+                db.commit()
+                return f"{movieCount} movies has been added to the database"
+            else:
+                return "The movie table is not empty. Nothing new added to the database."
 
     def add_movie_by_title(title: str, db: Session):
         if not title:
