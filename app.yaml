@@ -1,0 +1,38 @@
+runtime: python311
+service: fastapi-omdb
+entrypoint: gunicorn -w 1 -k uvicorn.workers.UvicornWorker main:app
+
+runtime_config:
+  python_version: 3.11
+
+beta_settings:
+  cloud_sql_instances: personal-1-2130:europe-west1:fastapi-omdb
+
+vpc_access_connector:
+  name: projects/personal-1-2130/locations/europe-west1/connectors/fastapi-omdb-connector
+
+env_variables:
+  APPENGINE_URL: https://fastapi-omdb-dot-personal-1-2130.ew.r.appspot.com
+  # FASTAPI_OMDB_DATABASE_URL: postgresql://postgres:postgres@//cloudsql/personal-1-2130:europe-west1:fastapi-omdb/fastapi-omdb
+  FASTAPI_OMDB_DATABASE_URL: postgresql://postgres:postgres@10.10.224.7/fastapi-omdb
+  FASTAPI_OMDB_OMDB_API_URL: https://www.omdbapi.com/
+  FASTAPI_OMDB_OMDB_API_KEY: 9ff9b2d1
+  FASTAPI_OMDB_HASHING_SECRET_KEY: 09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7
+  FASTAPI_OMDB_HASHING_ALGORITHM: HS256
+  FASTAPI_OMDB_ACCESS_TOKEN_EXPIRATION_MINUTES: 30
+
+instance_class: F4
+
+automatic_scaling:
+  min_instances: 0
+  max_instances: 2
+  target_cpu_utilization: 0.8
+  min_pending_latency: automatic
+  max_pending_latency: automatic
+
+handlers:
+  - url: /static
+    static_dir: static/
+  - url: /.*
+    secure: always
+    script: auto

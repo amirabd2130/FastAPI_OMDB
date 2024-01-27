@@ -134,3 +134,12 @@ class Movie():
         else:
             movie.delete()
             db.commit()
+
+    def delete_all_movies(db: Session, currentUser: schemas.User):
+        movie = db.query(models.Movie).where(True)
+        print("==HERE")
+        if movie:
+            print("==HERE")
+            movie.delete()
+            db.commit()
+        print("==HERE")

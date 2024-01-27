@@ -47,3 +47,8 @@ def get_a_movie(imdb_id: str | None = None, title: str | None = None, db: Sessio
 @router.delete("/delete/{imdb_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_movie_by_imdb_id(imdb_id: str, db: Session = Depends(database.get_db), currentUser: schemas.User = Depends(User.get_current_user)):
     return Movie.delete_movie_by_imdb_id(imdb_id, db, currentUser)
+
+
+@router.delete("/cleanup", status_code=status.HTTP_204_NO_CONTENT)
+def delete_all_movies(db: Session = Depends(database.get_db), currentUser: schemas.User = Depends(User.get_current_user)):
+    return Movie.delete_all_movies(db, currentUser)

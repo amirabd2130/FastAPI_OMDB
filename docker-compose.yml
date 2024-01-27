@@ -2,9 +2,36 @@ version: "1"
 
 services:
   api:
-    build: .
-    command: sh -c "uvicorn main:app --host=0.0.0.0 --port=8000"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8000:8000
+    environment:
+      # database URL
+      - FASTAPI_OMDB_DATABASE_URL=postgresql://fastapi_omdb:fastapi_omdb@db:5432/fastapi_omdb
+      # OMDB API URL/KEY (email used: amirabd2130@yahoo.com)
+      - FASTAPI_OMDB_OMDB_API_URL=https://www.omdbapi.com/
+      - FASTAPI_OMDB_OMDB_API_KEY=9ff9b2d1
+      # hashing
+      - FASTAPI_OMDB_HASHING_SECRET_KEY=09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7
+      - FASTAPI_OMDB_HASHING_ALGORITHM=HS256
+      - FASTAPI_OMDB_ACCESS_TOKEN_EXPIRATION_MINUTES=30
+    depends_on:
+      - db
     volumes:
       - .:/app
-    ports:
-      - "8000:8000"
+    command: bash -c "while !</dev/tcp/db/5432; do sleep 1; done; gunicorn main:app --workers 1 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000"
+  db:
+    image: postgres:15-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    expose:
+      - 5432
+    environment:
+      - POSTGRES_USER=fastapi_omdb
+      - POSTGRES_PASSWORD=fastapi_omdb
+      - POSTGRES_DB=fastapi_omdb
+
+volumes:
+  postgres_data:
