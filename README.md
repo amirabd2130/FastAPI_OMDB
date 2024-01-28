@@ -1,32 +1,36 @@
 # FastAPI_OMDB v1.0.0
 
-A simple API service implemented using FastAPI to retrieve movie data from the OMDB API and store it in the database. The endpoints include:
+A simple API service implemented using FastAPI to retrieve movie data from the OMDB API and store it in the database. The available endpoints are:
 
-- `/user/create` to create a user.
+- `/user/create`: Used for creating a user. Requires specifying at least `username` and `password`.
 
-- `/movie/init` to fetch data from OMDB and store it in the database if the latter is empty.
+- `/movie/init`: Fetches data from OMDB and stores it in the database if it's empty. You can specify a keyword like 'love' for `title` and use `count` to determine the number of records to retrieve.
 
-- `/movie/add` to search for a movie by title, retrieve all details from OMDB, and store it in the database.
+- `/movie/add`: Searches for a movie by its `title` on OMDB, retrieves all details, and stores it in the database.
 
-- `/movie/list` to list existing movies in the database. Optional parameters limit (default 10) and offset (default 0) can be set.
+- `/movie/list`: Lists existing movies in the database. Optional parameters include `limit` (default 10) to specify the maximum records to return and `offset` (default 0) to specify the starting point. Records are sorted in ascending order by their `title`.
 
-- `/movie/get` to retrieve a movie from the database by imdb_id, title, or both.
+- `/movie/get`: Retrieves an existing movie from the database by its `imdb_id`, `title`, or both.
 
-- `/movie/delete/{imdb_id}` to delete a movie from the database by imdb_id. Note: Authorization is required for this operation.
+- `/movie/delete/{imdb_id}` [AUTHORIZATION REQUIRED]: Deletes an existing movie from the database by its `imdb_id`.
 
-- `/movie/cleanup` to delete all the movies from the database
+- `/movie/cleanup` [AUTHORIZATION REQUIRED]: Deletes all movies from the database.
 
-NOTE: `/movie/init` and `/movie/cleanup` are there to make the testing easier
+NOTE: `/movie/init` and `/movie/cleanup` are included to facilitate testing.
 
 # GCP
 
 ## Deploy to GCP
 
-Using `app.yaml` will deploy to GCP and can be access here:
+Use `app.yaml` for deploying the service to GCP. IMPORTANT: Ensure to modify the env_variables in the file according to your project specifications and credentials.
 
-`gcloud app deploy --project personal-1-2130 --version 1`
+Use the following command to deploy to GCP. Replace `PROJECT_NAME` and `VERSION_NUMBER`.
 
-## Access the Deployed Service
+`gcloud app deploy --project PROJECT_NAME --version VERSION_NUMBER`
+
+## Swagger Documentation & Testing
+
+You can test the service using the Swagger documentation accessible below.
 
 `https://fastapi-omdb-dot-personal-1-2130.ew.r.appspot.com/docs`
 
@@ -34,7 +38,7 @@ Using `app.yaml` will deploy to GCP and can be access here:
 
 ## Running Outside docker
 
-The Following environment variables must be set if you want to run the API outside docker:
+The Following environment variables must be set if you want to execute the API outside docker. You should update these with your credentials.
 
 ```
 export FASTAPI_OMDB_DATABASE_URL=sqlite:///fastapi_omdb_api
@@ -45,22 +49,24 @@ export FASTAPI_OMDB_HASHING_ALGORITHM=HS256
 export FASTAPI_OMDB_ACCESS_TOKEN_EXPIRATION_MINUTES=30
 ```
 
-Navigate to `FastAPI_OMDB` directory and run the following command:
+Navigate to `FastAPI_OMDB` directory and execute the following command:
 
 `gunicorn main:app --workers 1 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000`
 
 ## Running Using `docker compose`
 
-Navigate to `FastAPI_OMDB` directory and run the following command:
+Navigate to `FastAPI_OMDB` directory and execute the following command:
 
 `docker compose up --build`
 
-## Accessing the API Documentation and Testing
+## Swagger Documentation & Testing
 
-Regardless of how you run the service, you can access the swagger documentation at http://127.0.0.1:8000/docs
+You can test the service using the Swagger documentation accessible below.
+
+`http://127.0.0.1:8000/docs`
 
 # Tests
 
-Navigate to `FastAPI_OMDB` directory and run the following command:
+Navigate to `FastAPI_OMDB` directory and run the following command to execute all the tests:
 
 `python3 -m pytest`

@@ -19,7 +19,7 @@ class Movie():
         if movieData.get("Metascore") != "N/A":
             metascore = movieData.get("Metascore")
         if movieData.get("BoxOffice") != "N/A":
-            boxOffice = int(movieData.get(
+            boxOffice = float(movieData.get(
                 "BoxOffice").replace(",", "").replace("$", ""))
         if movieData.get("Ratings") != "N/A":
             for item in movieData.get("Ratings"):
@@ -137,9 +137,6 @@ class Movie():
 
     def delete_all_movies(db: Session, currentUser: schemas.User):
         movie = db.query(models.Movie).where(True)
-        print("==HERE")
         if movie:
-            print("==HERE")
             movie.delete()
             db.commit()
-        print("==HERE")

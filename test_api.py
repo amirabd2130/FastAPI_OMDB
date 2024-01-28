@@ -121,7 +121,6 @@ def test_movie_get__with_id_existing_movie():
     response = client.get("/movie/get?imdb_id=tt0371746")
     assert response.status_code == 200
     response = response.json()
-    print('===', response)
     assert response["imdb_id"] == "tt0371746"
     assert response["title"] == "Iron Man"
 
@@ -135,7 +134,6 @@ def test_movie_get__with_title_existing_movie():
     response = client.get("/movie/get?title=Iron Man")
     assert response.status_code == 200
     response = response.json()
-    print('===', response)
     assert response["imdb_id"] == "tt0371746"
     assert response["title"] == "Iron Man"
 
@@ -149,7 +147,6 @@ def test_movie_get__with_both_params_matching():
     response = client.get("/movie/get?imdb_id=tt0371746&title=Iron Man")
     assert response.status_code == 200
     response = response.json()
-    print('===', response)
     assert response["imdb_id"] == "tt0371746"
     assert response["title"] == "Iron Man"
 
