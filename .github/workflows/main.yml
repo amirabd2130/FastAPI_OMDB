@@ -1,0 +1,25 @@
+name: Run Tests
+on: push
+
+env:
+  FASTAPI_OMDB_DATABASE_URL: sqlite:///fastapi_omdb_api
+  FASTAPI_OMDB_OMDB_API_URL: https://www.omdbapi.com/
+  FASTAPI_OMDB_OMDB_API_KEY: 9ff9b2d1
+  FASTAPI_OMDB_HASHING_SECRET_KEY: 09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7
+  FASTAPI_OMDB_HASHING_ALGORITHM: HS256
+  FASTAPI_OMDB_ACCESS_TOKEN_EXPIRATION_MINUTES: 30
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install Deps
+        run: |
+          pip install -r requirements.txt
+          pip install httpx
+      - name: Run Tests
+        run: python3 -m pytest
