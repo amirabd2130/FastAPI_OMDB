@@ -1,5 +1,5 @@
 import os
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 from typing import Union
 
 from include import exceptions, schemas
@@ -15,9 +15,9 @@ class JWTAuth():
     def create_token(self, data: dict, expires_delta: Union[timedelta, None] = None):
         to_encode = data.copy()
         if expires_delta:
-            expire = datetime.utcnow() + expires_delta
+            expire = datetime.now(UTC) + expires_delta
         else:
-            expire = datetime.utcnow() + timedelta(minutes=TOKEN_EXPIRATION)
+            expire = datetime.now(UTC) + timedelta(minutes=TOKEN_EXPIRATION)
         to_encode.update({"exp": expire})
         return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 

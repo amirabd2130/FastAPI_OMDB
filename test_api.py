@@ -187,7 +187,7 @@ def test_login__incorrect_credentials():
 
 
 def test_movie_delete__unauthorized():
-    response = client.delete("/movie/delete/ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+    response = client.delete("/movie/delete?imdb_id=ABCDEFGHIJKLMNOPQRSTUVWXYZ",
                              headers={"Authorization": 'Bearer ABCD'})
     assert response.status_code == 401
 
@@ -198,7 +198,7 @@ def test_movie_delete__non_existing_movie():
     assert response.status_code == 201
     response = response.json()
 
-    response = client.delete("/movie/delete/ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+    response = client.delete("/movie/delete?imdb_id=ABCDEFGHIJKLMNOPQRSTUVWXYZ",
                              headers={"Authorization": f'Bearer {response["access_token"]}'})
     assert response.status_code == 404
 
@@ -209,7 +209,7 @@ def test_movie_delete():
     assert response.status_code == 201
     response = response.json()
 
-    response = client.delete("/movie/delete/tt0371746",
+    response = client.delete("/movie/delete?imdb_id=tt0371746",
                              headers={"Authorization": f'Bearer {response["access_token"]}'})
     assert response.status_code == 204
 
