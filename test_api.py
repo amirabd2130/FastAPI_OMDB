@@ -188,7 +188,7 @@ def test_login__incorrect_credentials():
 
 def test_movie_delete__unauthorized():
     response = client.delete("/movie/delete/ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-                             headers={"Authorization": f'Bearer ABCD'})
+                             headers={"Authorization": 'Bearer ABCD'})
     assert response.status_code == 401
 
 

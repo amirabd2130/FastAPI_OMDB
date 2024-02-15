@@ -5,12 +5,12 @@ from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 
-class Movie():
+class Movie:
 
-    def get_record_count(db: Session):
+    def get_record_count(self, db: Session):
         return db.query(models.Movie).count()
 
-    def create_movie_object(movieData):
+    def create_movie_object(self, movieData):
         imdbVotes, imdbRating, metascore, boxOffice, ratings = 0, 0, 0, 0, {}
         if movieData.get("imdbVotes") != "N/A":
             imdbVotes = int(movieData.get("imdbVotes").replace(",", ""))
@@ -19,8 +19,7 @@ class Movie():
         if movieData.get("Metascore") != "N/A":
             metascore = movieData.get("Metascore")
         if movieData.get("BoxOffice") != "N/A":
-            boxOffice = float(movieData.get(
-                "BoxOffice").replace(",", "").replace("$", ""))
+            boxOffice = float(movieData.get("BoxOffice").replace(",", "").replace("$", ""))
         if movieData.get("Ratings") != "N/A":
             for item in movieData.get("Ratings"):
                 ratings[item["Source"]] = item["Value"]
@@ -53,89 +52,78 @@ class Movie():
             website=movieData.get("Website"),
         )
 
-    def init_movies(title: str, count: int, db: Session):
+    def init(self, title: str, count: int, db: Session):
         if not title or not count:
             raise exceptions.BAD_REQUEST_EXCEPTION
-        else:
-            # If there's no movie in the db
-            if Movie.get_record_count(db) == 0:
-                movieCount, page = 0, 2
-                while movieCount < count:
-                    moviesData = omdb.get_movie_detail_by_title(title, page)
-                    if not moviesData:
-                        raise exceptions.OMDB_API_ERROR
-                    else:
-                        for movieData in moviesData:
-                            if movieCount == count:
-                                break
-                            else:
-                                movieCount += 1
-                                movieDataDetails = omdb.get_movie_detail_by_id(
-                                    movieData.get("imdbID"))
-                                if not movieDataDetails:
-                                    raise exceptions.OMDB_API_ERROR
-                                else:
-                                    newMovie = Movie.create_movie_object(
-                                        movieDataDetails)
-                                    db.add(newMovie)
-                        page += 1
-                db.commit()
-                return f"{movieCount} movies has been added to the database"
-            else:
-                return "The movie table is not empty. Nothing new added to the database."
+        if self.get_record_count(db) > 0:
+            return "The movie table is not empty. Nothing new added to the database."
 
-    def add_movie_by_title(title: str, db: Session):
+        movieCount, page = 0, 2
+        while movieCount < count:
+            moviesData = omdb.get_movie_detail_by_title(title, page)
+            if not moviesData:
+                raise exceptions.OMDB_API_ERROR
+            for movieData in moviesData:
+                if movieCount == count:
+                    break
+                movieCount += 1
+                movieDataDetails = omdb.get_movie_detail_by_id(movieData.get("imdbID"))
+                if not movieDataDetails:
+                    raise exceptions.OMDB_API_ERROR
+                newMovie = self.create_movie_object(movieDataDetails)
+                db.add(newMovie)
+            page += 1
+        db.commit()
+        return f"{movieCount} movies has been added to the database"
+
+    def add_by_title(self, title: str, db: Session):
         if not title:
             raise exceptions.BAD_REQUEST_EXCEPTION
-        else:
-            movieData = omdb.get_movie_detail_by_title(title, 1, "t")
-            if not movieData:
-                raise exceptions.OMDB_API_ERROR
-            else:
-                # check if movie already exists in the db
-                movieInDb = db.query(models.Movie).where(
-                    models.Movie.imdb_id == movieData["imdbID"]).first()
-                if movieInDb:
-                    raise exceptions.MOVIE_EXISTS_EXCEPTION
-                else:
-                    newMovie = Movie.create_movie_object(movieData)
-                    db.add(newMovie)
-                    db.commit()
-                    return newMovie
+        movieData = omdb.get_movie_detail_by_title(title, 1, "t")
+        if not movieData:
+            raise exceptions.OMDB_API_ERROR
+        # check if movie already exists in the db
+        movieInDb = db.query(models.Movie).where(models.Movie.imdb_id == movieData["imdbID"]).first()
+        if movieInDb:
+            raise exceptions.MOVIE_EXISTS_EXCEPTION
+        newMovie = self.create_movie_object(movieData)
+        db.add(newMovie)
+        db.commit()
+        return newMovie
 
-    def get_a_movie(imdb_id: str, title: str, db: Session):
+    def get_one(self, imdb_id: str, title: str, db: Session):
         if not imdb_id and not title:
             raise exceptions.BAD_REQUEST_EXCEPTION
         elif imdb_id and title:
-            movie = db.query(models.Movie).where(
-                models.Movie.imdb_id == imdb_id).where(
+            movie = db.query(models.Movie).where(models.Movie.imdb_id == imdb_id).where(
                 func.lower(models.Movie.title) == title.lower()).first()
         elif imdb_id:
-            movie = db.query(models.Movie).where(
-                models.Movie.imdb_id == imdb_id).first()
+            movie = db.query(models.Movie).where(models.Movie.imdb_id == imdb_id).first()
         elif title:
-            movie = db.query(models.Movie).where(
-                func.lower(models.Movie.title) == title.lower()).first()
+            movie = db.query(models.Movie).where(func.lower(models.Movie.title) == title.lower()).first()
 
         if not movie:
             raise exceptions.NOT_FOUND_EXCEPTION
-        else:
-            return movie
+        return movie
 
-    def get_list_of_movies(limit: int, offset: int, db: Session):
-        movies = db.query(models.Movie).order_by(
-            models.Movie.title.asc()).offset(offset).limit(limit).all()
-        return movies
+    def get_list(self, limit: int, offset: int, db: Session):
+        total_records = self.get_record_count(db)
+        movies = db.query(models.Movie).order_by(models.Movie.title.asc()).offset(offset).limit(limit).all()
+        return schemas.MovieListPaginated(
+            results=[schemas.Movie(**a.__dict__) for a in movies],
+            pagination=schemas.ListPagination(total_records=total_records,
+                                              count=len(movies),
+                                              limit=limit,
+                                              offset=offset))
 
-    def delete_movie_by_imdb_id(imdb_id: str, db: Session, currentUser: schemas.User):
+    def delete_by_imdb_id(self, imdb_id: str, db: Session, currentUser: schemas.User):
         movie = db.query(models.Movie).where(models.Movie.imdb_id == imdb_id)
         if not movie.first():
             raise exceptions.NOT_FOUND_EXCEPTION
-        else:
-            movie.delete()
-            db.commit()
+        movie.delete()
+        db.commit()
 
-    def delete_all_movies(db: Session, currentUser: schemas.User):
+    def delete_all(self, db: Session, currentUser: schemas.User):
         movie = db.query(models.Movie).where(True)
         if movie:
             movie.delete()

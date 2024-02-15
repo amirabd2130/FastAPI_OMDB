@@ -20,6 +20,17 @@ NOTE: `/movie/init` and `/movie/cleanup` are included to facilitate testing.
 
 # GCP
 
+# Requirement for this to work
+
+- In your Cloud SQL, in Networking enable Private IP access
+  `https://console.cloud.google.com/sql/instances/fastapi-omdb/connections/networking?project=personal-1-2130`
+- In VPC Networks create a VPC Network (if not already created):
+  `https://console.cloud.google.com/networking/networks/list?project=personal-1-2130`
+- In Serverless VPC Access create a Connector:
+  `https://console.cloud.google.com/networking/connectors/list?project=personal-1-2130`
+- In Cloud SQL create a Connectivity Test, to test connection between different services and database:
+  `https://console.cloud.google.com/sql/instances/fastapi-omdb/connections/tests?project=personal-1-2130`
+
 ## Deploy to GCP
 
 Use `app.yaml` for deploying the service to GCP. IMPORTANT: Ensure to modify the env_variables in the file according to your project specifications and credentials.
@@ -40,8 +51,8 @@ You can test the service using the Swagger documentation accessible below.
 
 The Following environment variables must be set if you want to execute the API outside docker. You should update these with your credentials.
 
-```
-export FASTAPI_OMDB_DATABASE_URL=sqlite:///fastapi_omdb_api
+```sh
+export FASTAPI_OMDB_DATABASE_URL=sqlite:///fastapi_omdb_api.db
 export FASTAPI_OMDB_OMDB_API_URL=https://www.omdbapi.com/
 export FASTAPI_OMDB_OMDB_API_KEY=9ff9b2d1
 export FASTAPI_OMDB_HASHING_SECRET_KEY=09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7
@@ -52,6 +63,8 @@ export FASTAPI_OMDB_ACCESS_TOKEN_EXPIRATION_MINUTES=30
 Navigate to `FastAPI_OMDB` directory and execute the following command:
 
 `gunicorn main:app --workers 1 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000`
+OR
+`uvicorn main:app --port 8000`
 
 ## Running Using `docker compose`
 

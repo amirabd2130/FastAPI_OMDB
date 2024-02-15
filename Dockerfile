@@ -10,7 +10,7 @@ ENV PIP_NO_CACHE_DIR 1
 # create a non-root user `python:python`
 RUN groupadd --gid 1000 python && useradd --uid 1000 --gid python --shell /bin/bash --create-home python
 
-# create app directory using non-root user
+# create app directory
 RUN mkdir -p /home/python/app
 WORKDIR /home/python/app
 

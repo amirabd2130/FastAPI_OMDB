@@ -1,5 +1,0 @@
-modules = [
-    "authentication",
-    "movies",
-    "users",
-]

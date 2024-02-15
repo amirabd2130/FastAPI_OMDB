@@ -4,7 +4,6 @@ from include import database
 from modules.authentication.authentication import Authentication
 from sqlalchemy.orm import Session
 
-
 router = APIRouter(
     prefix="/login",
     tags=["User"],
@@ -13,4 +12,4 @@ router = APIRouter(
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
 def login(data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(database.get_db)):
-    return Authentication.login(data, db)
+    return Authentication().login(data, db)
