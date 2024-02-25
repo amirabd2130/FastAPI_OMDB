@@ -15,14 +15,15 @@ RUN mkdir -p /home/python/app
 WORKDIR /home/python/app
 
 # copy files
-COPY . .
+COPY requirements.txt .
+COPY src .
 RUN chown -R python:python /home/python/app
 
 # update pip and install dependencies
 # RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
-EXPOSE 8000
+EXPOSE 8080
 
 USER 1000
-# CMD ["gunicorn", "main:app", "--bind", "0.0.0.0:8000"]
+# CMD ["gunicorn", "main:app", "--bind", "0.0.0.0:8080"]

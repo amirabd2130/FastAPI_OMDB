@@ -14,12 +14,12 @@ CREDENTIALS_EXCEPTION = HTTPException(
 # 404
 NOT_FOUND_EXCEPTION = HTTPException(
     status_code=status.HTTP_404_NOT_FOUND,
-    detail=f"The record with provided detail deos not exist")
+    detail="The record with provided detail deos not exist")
 
 # 404
 OMDB_API_ERROR = HTTPException(
     status_code=status.HTTP_404_NOT_FOUND,
-    detail=f"Could not fetch data from OMDB API")
+    detail="Could not fetch data from OMDB API")
 
 # 409
 MOVIE_EXISTS_EXCEPTION = HTTPException(

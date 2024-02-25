@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from include import database, models
+from include.models import create_models
 from routers import authentication, movies, users
 
 DESCRIPTION = """
@@ -47,4 +47,4 @@ app.include_router(users.router)
 app.include_router(authentication.router)
 
 # create tables if they don't exist in the database
-models.Base.metadata.create_all(bind=database.engine)
+create_models()

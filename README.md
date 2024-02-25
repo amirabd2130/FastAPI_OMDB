@@ -62,9 +62,9 @@ export FASTAPI_OMDB_ACCESS_TOKEN_EXPIRATION_MINUTES=30
 
 Navigate to `FastAPI_OMDB` directory and execute the following command:
 
-`gunicorn main:app --workers 1 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000`
+`gunicorn main:app --workers 1 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8080`
 OR
-`uvicorn main:app --port 8000`
+`uvicorn main:app --port 8080`
 
 ## Running Using `docker compose`
 
@@ -76,7 +76,7 @@ Navigate to `FastAPI_OMDB` directory and execute the following command:
 
 You can test the service using the Swagger documentation accessible below.
 
-`http://127.0.0.1:8000/docs`
+`http://127.0.0.1:8080/docs`
 
 # Tests
 
