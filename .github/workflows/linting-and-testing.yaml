@@ -33,4 +33,5 @@ jobs:
       - name: Install Python & Deps
         uses: ./.github/actions/install-python-and-deps
       - name: Run Tests
+        working-directory: src/
         run: python3 -m pytest
