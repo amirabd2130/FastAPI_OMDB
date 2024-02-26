@@ -1,9 +1,11 @@
 import os
-from datetime import datetime, timedelta, UTC
-from typing import Union
+
+from datetime import UTC, datetime, timedelta
+
+from jose import JWTError, jwt
 
 from include import exceptions, schemas
-from jose import JWTError, jwt
+
 
 SECRET_KEY = os.environ.get("FASTAPI_OMDB_HASHING_SECRET_KEY")
 ALGORITHM = os.environ.get("FASTAPI_OMDB_HASHING_ALGORITHM")
@@ -11,8 +13,8 @@ TOKEN_EXPIRATION = int(os.environ.get(
     "FASTAPI_OMDB_ACCESS_TOKEN_EXPIRATION_MINUTES"))
 
 
-class JWTAuth():
-    def create_token(self, data: dict, expires_delta: Union[timedelta, None] = None):
+class JWTAuth:
+    def create_token(self, data: dict, expires_delta: timedelta | None = None):
         to_encode = data.copy()
         if expires_delta:
             expire = datetime.now(UTC) + expires_delta

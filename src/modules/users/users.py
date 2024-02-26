@@ -1,13 +1,15 @@
 import uuid
 
 from fastapi import Depends
-from include import database, exceptions, hashing, models, schemas
-from modules.authentication.authentication import oauth2_scheme
-from modules.authentication.token import JWTAuth
 from sqlalchemy.orm import Session
 
+from include import database, exceptions, models, schemas
+from include.hashing import Hashing
+from modules.authentication.authentication import oauth2_scheme
+from modules.authentication.token import JWTAuth
 
-class User():
+
+class User:
     def create_user(self, request: schemas.User, db: Session):
         if not request.username or not request.password:
             raise exceptions.BAD_REQUEST_EXCEPTION
@@ -15,16 +17,16 @@ class User():
             models.User.username == request.username).first()
         if user:
             raise exceptions.USER_EXISTS_EXCEPTION
-        newUser = models.User(
+        new_user = models.User(
             id=str(uuid.uuid4()),
             first_name=request.first_name,
             last_name=request.last_name,
             username=request.username,
-            password=hashing.Hashing.Hash(request.password),)
-        db.add(newUser)
+            password=Hashing().hash(request.password),)
+        db.add(new_user)
         db.commit()
-        db.refresh(newUser)
-        return newUser
+        db.refresh(new_user)
+        return new_user
 
     def get_user_by_username(self, username: str, db: Session):
         user = db.query(models.User).where(models.User.username == username).first()

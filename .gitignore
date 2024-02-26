@@ -10,5 +10,6 @@ fastapi_omdb_api_test.db
 __pycache__/
 .idea/
 .pytest_cache/
+.ruff_cache/
 .vscode/
 venv/

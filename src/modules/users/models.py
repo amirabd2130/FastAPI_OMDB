@@ -1,5 +1,6 @@
-from include.database import Base
 from sqlalchemy import Column, String
+
+from include.database import Base
 
 
 class User(Base):

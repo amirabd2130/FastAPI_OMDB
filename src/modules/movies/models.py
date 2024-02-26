@@ -1,5 +1,6 @@
-from include.database import Base
 from sqlalchemy import JSON, Column, Float, Integer, String, Text
+
+from include.database import Base
 
 
 class Movie(Base):

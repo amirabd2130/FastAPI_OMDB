@@ -1,6 +1,8 @@
 from fastapi import FastAPI
+
 from include.models import create_models
 from routers import authentication, movies, users
+
 
 DESCRIPTION = """
 A simple API service implemented using FastAPI to retrieve movie data from the OMDB API and store it in the database. The available endpoints are:

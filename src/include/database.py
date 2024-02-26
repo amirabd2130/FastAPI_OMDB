@@ -1,8 +1,10 @@
 import os
 
-from include import exceptions
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
+
+from include import exceptions
+
 
 FASTAPI_OMDB_DATABASE_URL = os.environ.get("FASTAPI_OMDB_DATABASE_URL")
 if not FASTAPI_OMDB_DATABASE_URL:

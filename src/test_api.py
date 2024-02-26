@@ -1,9 +1,10 @@
 from fastapi.testclient import TestClient
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
 from include import models
 from include.database import get_db
 from main import app
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 
 
 SQLALCHEMY_DATABASE_URL = "sqlite:///fastapi_omdb_api_test.db"

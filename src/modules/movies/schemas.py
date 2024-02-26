@@ -1,7 +1,7 @@
-from typing import List
+
+from pydantic import BaseModel
 
 from include.schemas import ListPagination
-from pydantic import BaseModel
 
 
 class Movie(BaseModel):
@@ -32,5 +32,5 @@ class Movie(BaseModel):
 
 
 class MovieListPaginated(BaseModel):
-    results: List[Movie] = []
+    results: list[Movie] = []
     pagination: ListPagination

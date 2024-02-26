@@ -1,17 +1,17 @@
 import bcrypt
 
 
-class Hashing():
-    def Hash(string: str):
-        stringBytes = string.encode("utf-8")
+class Hashing:
+    def hash(self, string: str):
+        string_bytes = string.encode("utf-8")
         salt = bcrypt.gensalt()
-        return bcrypt.hashpw(password=stringBytes, salt=salt).decode('utf8')
+        return bcrypt.hashpw(password=string_bytes, salt=salt).decode('utf8')
 
-    def Verify(plainString: str, hashedString: str):
-        plainStringByte = plainString.encode("utf-8")
-        if isinstance(hashedString, str):
-            hashedStringByte = hashedString.encode("utf-8")
+    def verify(self, plain_string: str, hashed_string: str):
+        plain_string_byte = plain_string.encode("utf-8")
+        if isinstance(hashed_string, str):
+            hashed_string_byte = hashed_string.encode("utf-8")
         else:
-            hashedStringByte = hashedString
+            hashed_string_byte = hashed_string
 
-        return bcrypt.checkpw(password=plainStringByte, hashed_password=hashedStringByte)
+        return bcrypt.checkpw(password=plain_string_byte, hashed_password=hashed_string_byte)

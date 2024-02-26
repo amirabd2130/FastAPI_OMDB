@@ -1,6 +1,6 @@
+from include import database
 from modules.movies.models import *
 from modules.users.models import *
-from include import database
 
 
 def create_models():
